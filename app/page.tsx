@@ -13,6 +13,7 @@ export default function Home() {
     referralSource: ''
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,6 +34,11 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Prevent multiple submissions
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     // Google Apps Script URL for form submissions
     const scriptURL = 'https://script.google.com/macros/s/AKfycbzH4UMh4ZCJWZd35-r-4o5afxu8uawUnbyBfNSv4whxmInMwAB-5bh6V9kl3ZBwKyrL/exec';
 
@@ -51,6 +57,8 @@ export default function Home() {
       console.error('Error submitting form:', error);
       // Still show success message to user
       setFormSubmitted(true);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -267,9 +275,10 @@ export default function Home() {
 
                     <button
                       type="submit"
-                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-lg font-semibold transition-all hover:scale-105 shadow-lg shadow-emerald-600/20"
+                      disabled={isSubmitting}
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-lg font-semibold transition-all hover:scale-105 shadow-lg shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                     >
-                      Submit Application
+                      {isSubmitting ? 'Submitting...' : 'Submit Application'}
                     </button>
 
                     <p className="text-xs text-stone-400 text-center">
@@ -531,22 +540,33 @@ export default function Home() {
             <div>
               <h4 className="text-stone-100 font-semibold mb-4">Community</h4>
               <ul className="space-y-3">
-                {['About Us', 'Benefits', 'Members', 'Events'].map((item) => (
-                  <li key={item}>
-                    <a href="#" className="text-stone-400 hover:text-emerald-500 transition-colors">{item}</a>
-                  </li>
-                ))}
+                <li>
+                  <button onClick={() => scrollToSection('about')} className="text-stone-400 hover:text-emerald-500 transition-colors">About Us</button>
+                </li>
+                <li>
+                  <button onClick={() => scrollToSection('benefits')} className="text-stone-400 hover:text-emerald-500 transition-colors">Benefits</button>
+                </li>
+                <li>
+                  <button onClick={() => scrollToSection('members')} className="text-stone-400 hover:text-emerald-500 transition-colors">Members</button>
+                </li>
+                <li>
+                  <button onClick={() => scrollToSection('apply')} className="text-stone-400 hover:text-emerald-500 transition-colors">Apply Now</button>
+                </li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-stone-100 font-semibold mb-4">Legal</h4>
               <ul className="space-y-3">
-                {['Privacy Policy', 'Terms of Service', 'Contact Us'].map((item) => (
-                  <li key={item}>
-                    <a href="#" className="text-stone-400 hover:text-emerald-500 transition-colors">{item}</a>
-                  </li>
-                ))}
+                <li>
+                  <button onClick={() => alert('Privacy Policy - Coming Soon')} className="text-stone-400 hover:text-emerald-500 transition-colors">Privacy Policy</button>
+                </li>
+                <li>
+                  <button onClick={() => alert('Terms of Service - Coming Soon')} className="text-stone-400 hover:text-emerald-500 transition-colors">Terms of Service</button>
+                </li>
+                <li>
+                  <button onClick={() => alert('Contact: info@netmoney.com')} className="text-stone-400 hover:text-emerald-500 transition-colors">Contact Us</button>
+                </li>
               </ul>
             </div>
           </div>
